@@ -28,7 +28,16 @@ Generate tasks according to the given config:
 
 ```js
 var tasks = generator({
-    mode: 'development'
+    mode: 'development',
+    entry: 'src/js/main.js',
+    output: {
+        filename: 'develop.js',
+        path: path.resolve('build')
+    },
+    devtool: 'source-map',
+    plugins: [
+        new webpack.optimize.OccurrenceOrderPlugin()
+    ]
 });
 ```
 
@@ -81,12 +90,12 @@ Object.assign(runner.tasks,
 
 It will add the following tasks:
 
-`js:config:develop` 
-`js:build:develop`  
-`js:modules:develop`
-`js:clear:develop`  
-`js:watch:develop`
-`js:unwatch:develop`
+* `js:config:develop` 
+* `js:build:develop`  
+* `js:modules:develop`
+* `js:clear:develop`  
+* `js:watch:develop`
+* `js:unwatch:develop`
  
 
 ## Contribution ##
