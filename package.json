@@ -1,0 +1,35 @@
+{
+    "name": "@runner/generator-webpack",
+    "version": "1.0.0",
+    "description": "Tasks generator for Webpack.",
+    "author": {
+        "name": "Stanislav Kalashnik",
+        "email": "darkpark.main@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/runner/generator-webpack"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "test": "npm run lint"
+    },
+    "dependencies": {
+        "@runner/logger": "^1.0.0",
+        "webpack": "^4.11.1"
+    },
+    "devDependencies": {
+        "@cjssdk/eslint-config": "^1.1.2",
+        "eslint": "^4.19.1"
+    },
+    "keywords": [
+        "task",
+        "runner",
+        "generator",
+        "webpack"
+    ],
+    "license": "GPL-3.0"
+}
