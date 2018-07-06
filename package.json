@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@runner/logger": "^1.0.0",
-        "webpack": "^4.11.1"
+        "webpack": "^4.15.1"
     },
     "devDependencies": {
         "@cjssdk/eslint-config": "^1.1.2",
