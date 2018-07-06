@@ -132,7 +132,7 @@ function modules ( instance ) {
                     log.info('    %s %s from %s',
                         log.colors.grey(reason.type),
                         log.colors.green(reason.userRequest),
-                        log.colors.green(reason.module)
+                        reason.module ? log.colors.green(reason.module) : log.colors.grey('n/a')
                     );
                 });
             } else {
