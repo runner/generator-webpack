@@ -1,5 +1,5 @@
 {
-    "name": "@runner/generator-webpack",
+    "name": "runner-generator-webpack",
     "version": "1.0.1",
     "description": "Tasks generator for Webpack.",
     "author": {
@@ -10,16 +10,13 @@
         "type": "git",
         "url": "https://github.com/runner/generator-webpack.git"
     },
-    "publishConfig": {
-        "access": "public"
-    },
     "scripts": {
         "lint": "eslint .",
         "test": "npm run lint"
     },
     "dependencies": {
-        "@runner/logger": "^1.0.0",
-        "@runner/tools": "^1.2.0",
+        "runner-logger": "^1.0.0",
+        "runner-tools": "^1.2.0",
         "webpack": "^4.15.1"
     },
     "devDependencies": {

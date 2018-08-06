@@ -6,8 +6,8 @@
 'use strict';
 
 var name  = 'webpack',
-    tools = require('@runner/tools'),
-    log   = require('@runner/logger').wrap(name);
+    tools = require('runner-tools'),
+    log   = require('runner-logger').wrap(name);
 
 
 function report ( config, instance, error, stats ) {
