@@ -1,6 +1,6 @@
 {
     "name": "runner-generator-webpack",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Tasks generator for Webpack.",
     "author": {
         "name": "Stanislav Kalashnik",
@@ -15,9 +15,9 @@
         "test": "npm run lint"
     },
     "dependencies": {
-        "runner-logger": "^1.0.0",
-        "runner-tools": "^1.2.0",
-        "webpack": "^4.15.1"
+        "runner-logger": "^1.0.1",
+        "runner-tools": "^1.2.1",
+        "webpack": "^4.16.5"
     },
     "devDependencies": {
         "cjs-eslint": "^1.1.1"
