@@ -125,11 +125,12 @@ function clear ( config, done ) {
 
 function modules ( instance ) {
     if ( instance ) {
-        instance.stats.modules.forEach(function ( module ) {
-            log.info(log.colors.bold(module.name));
-            if ( module.reasons.length ) {
-                module.reasons.forEach(function ( reason ) {
-                    log.info('    %s %s from %s',
+        instance.stats.modules.forEach(function ( statModule ) {
+            log.info(log.colors.bold(statModule.name));
+            if ( statModule.reasons.length ) {
+                statModule.reasons.forEach(function ( reason ) {
+                    log.info(
+                        '    %s %s from %s',
                         log.colors.grey(reason.type),
                         log.colors.green(reason.userRequest),
                         reason.module ? log.colors.green(reason.module) : log.colors.grey('n/a')
