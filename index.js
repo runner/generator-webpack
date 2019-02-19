@@ -89,6 +89,11 @@ function build ( config, instance, done ) {
     } else {
         instance.compiler.run(function ( error, stats ) {
             report(config, instance, error, stats);
+
+            if ( stats.hasErrors() ) {
+                process.exit(1);
+            }
+
             done();
         });
     }
