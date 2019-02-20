@@ -37,7 +37,27 @@ var tasks = generator({
     devtool: 'source-map',
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin()
-    ]
+    ],
+    hooks: {
+        done: {
+            // according to https://webpack.js.org/api/compiler-hooks/
+            // each hook must pass a class name of https://github.com/webpack/tapable
+            class: 'AsyncSeriesHook',
+            callbacks: [
+                function ( stats) {
+                    console.log(stats);
+                }
+            ]
+        },
+        compile: {
+            class: 'SyncHook',
+            callbacks: [
+                function ( compilationParams ) {
+                    console.log(compilationParams);
+                }
+            ]
+        }
+    }
 });
 ```
 

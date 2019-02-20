@@ -84,29 +84,6 @@ function build ( config, instance, done ) {
     instance.compiler = instance.compiler || webpack(config);
 
     if ( hooks ) {
-        /*
-        Example of hooks structure
-        {
-            done: {
-                // according to https://webpack.js.org/api/compiler-hooks/ each hook must pass a class name of https://github.com/webpack/tapable
-                class: 'AsyncSeriesHook',
-                callbacks: [
-                    stats => {
-                        console.log(stats);
-                    }
-                ]
-            },
-            compile: {
-                class: 'SyncHook',
-                callbacks: [
-                    compilationParams => {
-                        console.log(compilationParams);
-                    }
-                ]
-            }
-        }
-        */
-
         Object.keys(hooks).forEach(function ( hookName ) {
             var hook = hooks[hookName];
 
@@ -188,7 +165,7 @@ function generator ( config, options ) {
     // sanitize and extend defaults
     config = config || {};
     generator.config = config;
-    options = Object.assign(generator.options, options || {});
+    options = Object.assign({}, generator.options, options || {});
 
     tasks[options.prefix + 'config' + options.suffix] = function () {
         log.inspect(config);
