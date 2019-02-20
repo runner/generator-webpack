@@ -75,10 +75,46 @@ function watch ( config, instance, done ) {
 
 
 function build ( config, instance, done ) {
-    var webpack = require('webpack');
+    var webpack = require('webpack'),
+        hooks   = config.hooks;
+
+    delete config.hooks;
 
     // reuse existing instance if possible
     instance.compiler = instance.compiler || webpack(config);
+
+    if ( hooks ) {
+        /*
+        Example of hooks structure
+        {
+            done: {
+                // according to https://webpack.js.org/api/compiler-hooks/ each hook must pass a class name of https://github.com/webpack/tapable
+                class: 'AsyncSeriesHook',
+                callbacks: [
+                    stats => {
+                        console.log(stats);
+                    }
+                ]
+            },
+            compile: {
+                class: 'SyncHook',
+                callbacks: [
+                    compilationParams => {
+                        console.log(compilationParams);
+                    }
+                ]
+            }
+        }
+        */
+
+        Object.keys(hooks).forEach(function ( hookName ) {
+            var hook = hooks[hookName];
+
+            hook.callbacks.forEach(function ( callback ) {
+                instance.compiler.hooks[hookName].tap(hook.class, callback);
+            });
+        });
+    }
 
     if ( instance.watcher ) {
         // if watch function is still running
@@ -89,10 +125,6 @@ function build ( config, instance, done ) {
     } else {
         instance.compiler.run(function ( error, stats ) {
             report(config, instance, error, stats);
-
-            if ( stats.hasErrors() ) {
-                process.exit(1);
-            }
 
             done();
         });
