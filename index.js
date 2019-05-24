@@ -163,37 +163,33 @@ function modules ( instance ) {
 
 
 function generator ( config = {}, options = {} ) {
-    const tasks = {};
+    const
+        tasks = {},
+        {prefix = name + ':', suffix = ''} = options;
 
     let instance = {};
 
-    // sanitize and extend defaults
-    options = Object.assign({}, {
-        prefix: name + ':',
-        suffix: ''
-    }, options);
-
-    tasks[options.prefix + 'config' + options.suffix] = function () {
+    tasks[prefix + 'config' + suffix] = function () {
         log.inspect(config);
     };
 
-    tasks[options.prefix + 'build' + options.suffix] = function ( done ) {
+    tasks[prefix + 'build' + suffix] = function ( done ) {
         instance = build(config, instance, done);
     };
 
-    tasks[options.prefix + 'modules' + options.suffix] = function () {
+    tasks[prefix + 'modules' + suffix] = function () {
         modules(instance);
     };
 
-    tasks[options.prefix + 'clear' + options.suffix] = function ( done ) {
+    tasks[prefix + 'clear' + suffix] = function ( done ) {
         clear(config, done);
     };
 
-    tasks[options.prefix + 'watch' + options.suffix] = function ( done ) {
+    tasks[prefix + 'watch' + suffix] = function ( done ) {
         instance = watch(config, instance, done);
     };
 
-    tasks[options.prefix + 'unwatch' + options.suffix] = function () {
+    tasks[prefix + 'unwatch' + suffix] = function () {
         instance = unwatch(instance);
     };
 
