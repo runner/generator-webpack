@@ -5,13 +5,15 @@
 
 'use strict';
 
-var name  = 'webpack',
+const
+    name  = 'webpack',
     tools = require('runner-tools'),
     log   = require('runner-logger').wrap(name);
 
 
 function report ( config, instance, error, stats ) {
-    var path = require('path'),
+    const
+        path = require('path'),
         dir  = path.relative('.', config.output.path);
 
     if ( error ) {
@@ -46,7 +48,7 @@ function report ( config, instance, error, stats ) {
 
 
 function watch ( config, instance, done ) {
-    var webpack = require('webpack');
+    const webpack = require('webpack');
 
     // reuse existing instance if possible
     instance.compiler = instance.compiler || webpack(config);
@@ -75,7 +77,8 @@ function watch ( config, instance, done ) {
 
 
 function build ( config, instance, done ) {
-    var webpack = require('webpack'),
+    const
+        webpack = require('webpack'),
         hooks   = config.hooks;
 
     delete config.hooks;
@@ -85,7 +88,7 @@ function build ( config, instance, done ) {
 
     if ( hooks ) {
         Object.keys(hooks).forEach(function ( hookName ) {
-            var hook = hooks[hookName];
+            const hook = hooks[hookName];
 
             hook.callbacks.forEach(function ( callback ) {
                 instance.compiler.hooks[hookName].tap(hook.class, callback);
@@ -125,7 +128,8 @@ function unwatch ( instance ) {
 
 
 function clear ( config, done ) {
-    var path  = require('path'),
+    const
+        path  = require('path'),
         files = [path.relative('.', path.join(config.output.path, config.output.filename))];
 
     // add map file
@@ -159,8 +163,9 @@ function modules ( instance ) {
 
 
 function generator ( config, options ) {
-    var tasks    = {},
-        instance = {};
+    const tasks = {};
+
+    let instance = {};
 
     // sanitize and extend defaults
     generator.config = config = config || {};

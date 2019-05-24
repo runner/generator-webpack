@@ -21,13 +21,13 @@ npm install runner-generator-webpack
 Add to the scope:
 
 ```js
-var generator = require('runner-generator-webpack');
+const generator = require('runner-generator-webpack');
 ```
 
 Generate tasks according to the given config:
 
 ```js
-var tasks = generator({
+const tasks = generator({
     mode: 'development',
     entry: 'src/js/main.js',
     output: {
@@ -64,7 +64,7 @@ var tasks = generator({
 Add generated tasks to the `runner` instance:
 
 ```js
-var runner = require('runner');
+const runner = require('runner');
 
 Object.assign(runner.tasks, tasks);
 ```
