@@ -6,9 +6,19 @@
 'use strict';
 
 const
-    name  = 'webpack',
-    tools = require('runner-tools'),
-    log   = require('runner-logger').wrap(name);
+    name    = 'webpack',
+    tools   = require('runner-tools'),
+    log     = require('runner-logger').wrap(name),
+    configs = new Map();
+
+
+function resolveConfig ( config, webpack ) {
+    if ( !configs.has(config) ) {
+        configs.set(config, config(webpack));
+    }
+
+    return configs.get(config);
+}
 
 
 function report ( config, instance, error, stats ) {
@@ -50,6 +60,8 @@ function report ( config, instance, error, stats ) {
 function watch ( config, instance, done ) {
     const webpack = require('webpack');
 
+    config = resolveConfig(config, webpack);
+
     // reuse existing instance if possible
     instance.compiler = instance.compiler || webpack(config);
 
@@ -80,6 +92,8 @@ function build ( config, instance, done ) {
     const
         webpack = require('webpack'),
         hooks   = config.hooks;
+
+    config = resolveConfig(config, webpack);
 
     delete config.hooks;
 
@@ -129,8 +143,14 @@ function unwatch ( instance ) {
 
 function clear ( config, done ) {
     const
-        path  = require('path'),
-        files = [path.relative('.', path.join(config.output.path, config.output.filename))];
+        path    = require('path'),
+        webpack = require('webpack');
+
+    let files;
+
+    config = resolveConfig(config, webpack);
+
+    files = [path.relative('.', path.join(config.output.path, config.output.filename))];
 
     // add map file
     if ( config.output.sourceMapFilename ) {
@@ -162,7 +182,7 @@ function modules ( instance ) {
 }
 
 
-function generator ( config = {}, options = {} ) {
+function generator ( config, options = {} ) {
     const
         tasks = {},
         {prefix = name + ':', suffix = ''} = options;
@@ -170,7 +190,7 @@ function generator ( config = {}, options = {} ) {
     let instance = {};
 
     tasks[prefix + 'config' + suffix] = function () {
-        log.inspect(config);
+        log.inspect(resolveConfig(config, require('webpack')));
     };
 
     tasks[prefix + 'build' + suffix] = function ( done ) {

@@ -27,37 +27,39 @@ const generator = require('runner-generator-webpack');
 Generate tasks according to the given config:
 
 ```js
-const tasks = generator({
-    mode: 'development',
-    entry: 'src/js/main.js',
-    output: {
-        filename: 'develop.js',
-        path: path.resolve('build')
-    },
-    devtool: 'source-map',
-    plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin()
-    ],
-    hooks: {
-        done: {
-            // according to https://webpack.js.org/api/compiler-hooks/
-            // each hook must pass a class name of https://github.com/webpack/tapable
-            class: 'AsyncSeriesHook',
-            callbacks: [
-                function ( stats) {
-                    console.log(stats);
-                }
-            ]
+const tasks = generator(webpack => {
+    return {
+        mode: 'development',
+        entry: 'src/js/main.js',
+        output: {
+            filename: 'develop.js',
+            path: path.resolve('build')
         },
-        compile: {
-            class: 'SyncHook',
-            callbacks: [
-                function ( compilationParams ) {
-                    console.log(compilationParams);
-                }
-            ]
+        devtool: 'source-map',
+        plugins: [
+            new webpack.optimize.OccurrenceOrderPlugin()
+        ],
+        hooks: {
+            done: {
+                // according to https://webpack.js.org/api/compiler-hooks/
+                // each hook must pass a class name of https://github.com/webpack/tapable
+                class: 'AsyncSeriesHook',
+                callbacks: [
+                    function ( stats) {
+                        console.log(stats);
+                    }
+                ]
+            },
+            compile: {
+                class: 'SyncHook',
+                callbacks: [
+                    function ( compilationParams ) {
+                        console.log(compilationParams);
+                    }
+                ]
+            }
         }
-    }
+    };
 });
 ```
 
