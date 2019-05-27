@@ -15,8 +15,8 @@
         "test": "npm run lint"
     },
     "dependencies": {
-        "runner-logger": "^1.0.1",
-        "runner-tools": "^1.2.1",
+        "runner-logger": "^2.0.0",
+        "runner-tools": "^2.0.0",
         "webpack": "^4.32.2"
     },
     "devDependencies": {
