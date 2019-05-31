@@ -21,6 +21,17 @@ function resolveConfig ( configProducer, webpack ) {
 }
 
 
+function applyHooksToCompiler ( hooks, compiler ) {
+    Object.keys(hooks).forEach(function ( hookName ) {
+        const hook = hooks[hookName];
+
+        hook.callbacks.forEach(function ( callback ) {
+            compiler.hooks[hookName].tap(hook.class, callback);
+        });
+    });
+}
+
+
 function report ( config, instance, error, stats ) {
     const
         path = require('path'),
@@ -60,8 +71,10 @@ function report ( config, instance, error, stats ) {
 function watch ( configProducer, instance, done ) {
     const
         webpack = require('webpack'),
+        config  = resolveConfig(configProducer, webpack),
+        hooks   = config.hooks;
 
-        config  = resolveConfig(configProducer, webpack);
+    delete config.hooks;
 
     // reuse existing instance if possible
     instance.compiler = instance.compiler || webpack(config);
@@ -71,6 +84,10 @@ function watch ( configProducer, instance, done ) {
         log.fail('You ran Webpack twice. Each instance only supports a single concurrent compilation at a time.');
         done();
     } else {
+        if ( hooks ) {
+            applyHooksToCompiler(hooks, instance.compiler);
+        }
+
         instance.watcher = instance.compiler.watch(config.watchOptions, function ( error, stats ) {
             report(config, instance, error, stats);
             if ( instance.buildInWatch ) {
@@ -102,13 +119,7 @@ function build ( configProducer, instance, done ) {
     instance.compiler = instance.compiler || webpack(config);
 
     if ( hooks ) {
-        Object.keys(hooks).forEach(function ( hookName ) {
-            const hook = hooks[hookName];
-
-            hook.callbacks.forEach(function ( callback ) {
-                instance.compiler.hooks[hookName].tap(hook.class, callback);
-            });
-        });
+        applyHooksToCompiler(hooks, instance.compiler);
     }
 
     if ( instance.watcher ) {
