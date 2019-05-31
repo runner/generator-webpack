@@ -171,7 +171,7 @@ function clear ( configProducer, done ) {
 
 
 function modules ( instance ) {
-    if ( instance ) {
+    if ( instance.stats ) {
         instance.stats.modules.forEach(function ( statModule ) {
             log.info(log.colors.bold(statModule.name));
             if ( statModule.reasons.length ) {
