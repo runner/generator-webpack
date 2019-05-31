@@ -159,11 +159,11 @@ function clear ( configProducer, done ) {
         webpack = require('webpack'),
 
         config = resolveConfig(configProducer, webpack),
-        files = [path.relative('.', path.join(config.output.path, config.output.filename))];
+        files  = [path.join(config.output.path, config.output.filename)];
 
     // add map file
     if ( config.output.sourceMapFilename ) {
-        files.push(path.relative('.', path.join(config.output.path, config.output.sourceMapFilename)));
+        files.push(path.join(config.output.path, config.output.sourceMapFilename));
     }
 
     tools.unlink(files, log, done);
