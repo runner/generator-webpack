@@ -91,14 +91,14 @@ function watch ( config, instance, done ) {
 function build ( config, instance, done ) {
     const
         webpack = require('webpack'),
-        hooks   = config.hooks;
 
-    config = resolveConfig(config, webpack);
+        webpackConfig = resolveConfig(config, webpack),
+        hooks         = webpackConfig.hooks;
 
-    delete config.hooks;
+    delete webpackConfig.hooks;
 
     // reuse existing instance if possible
-    instance.compiler = instance.compiler || webpack(config);
+    instance.compiler = instance.compiler || webpack(webpackConfig);
 
     if ( hooks ) {
         Object.keys(hooks).forEach(function ( hookName ) {
@@ -118,7 +118,7 @@ function build ( config, instance, done ) {
         });
     } else {
         instance.compiler.run(function ( error, stats ) {
-            report(config, instance, error, stats);
+            report(webpackConfig, instance, error, stats);
 
             done();
         });
