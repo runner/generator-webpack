@@ -12,12 +12,23 @@ const
     configs = new Map();
 
 
-function resolveConfig ( config, webpack ) {
-    if ( !configs.has(config) ) {
-        configs.set(config, config(webpack));
+function resolveConfig ( configProducer, webpack ) {
+    if ( !configs.has(configProducer) ) {
+        configs.set(configProducer, configProducer(webpack));
     }
 
-    return configs.get(config);
+    return configs.get(configProducer);
+}
+
+
+function applyHooksToCompiler ( hooks, compiler ) {
+    Object.keys(hooks).forEach(function ( hookName ) {
+        const hook = hooks[hookName];
+
+        hook.callbacks.forEach(function ( callback ) {
+            compiler.hooks[hookName].tap(hook.class, callback);
+        });
+    });
 }
 
 
@@ -57,10 +68,14 @@ function report ( config, instance, error, stats ) {
 }
 
 
-function watch ( config, instance, done ) {
-    const webpack = require('webpack');
+function watch ( configProducer, instance, done ) {
+    const
+        webpack = require('webpack'),
 
-    config = resolveConfig(config, webpack);
+        config = resolveConfig(configProducer, webpack),
+        hooks  = config.hooks;
+
+    delete config.hooks;
 
     // reuse existing instance if possible
     instance.compiler = instance.compiler || webpack(config);
@@ -70,6 +85,10 @@ function watch ( config, instance, done ) {
         log.fail('You ran Webpack twice. Each instance only supports a single concurrent compilation at a time.');
         done();
     } else {
+        if ( hooks ) {
+            applyHooksToCompiler(hooks, instance.compiler);
+        }
+
         instance.watcher = instance.compiler.watch(config.watchOptions, function ( error, stats ) {
             report(config, instance, error, stats);
             if ( instance.buildInWatch ) {
@@ -88,12 +107,12 @@ function watch ( config, instance, done ) {
 }
 
 
-function build ( config, instance, done ) {
+function build ( configProducer, instance, done ) {
     const
         webpack = require('webpack'),
-        hooks   = config.hooks;
 
-    config = resolveConfig(config, webpack);
+        config = resolveConfig(configProducer, webpack),
+        hooks  = config.hooks;
 
     delete config.hooks;
 
@@ -101,13 +120,7 @@ function build ( config, instance, done ) {
     instance.compiler = instance.compiler || webpack(config);
 
     if ( hooks ) {
-        Object.keys(hooks).forEach(function ( hookName ) {
-            const hook = hooks[hookName];
-
-            hook.callbacks.forEach(function ( callback ) {
-                instance.compiler.hooks[hookName].tap(hook.class, callback);
-            });
-        });
+        applyHooksToCompiler(hooks, instance.compiler);
     }
 
     if ( instance.watcher ) {
@@ -141,20 +154,18 @@ function unwatch ( instance ) {
 }
 
 
-function clear ( config, done ) {
+function clear ( configProducer, done ) {
     const
         path    = require('path'),
-        webpack = require('webpack');
+        webpack = require('webpack'),
 
-    let files;
+        config = resolveConfig(configProducer, webpack),
 
-    config = resolveConfig(config, webpack);
-
-    files = [path.relative('.', path.join(config.output.path, config.output.filename))];
+        files = [path.join(config.output.path, config.output.filename)];
 
     // add map file
     if ( config.output.sourceMapFilename ) {
-        files.push(path.relative('.', path.join(config.output.path, config.output.sourceMapFilename)));
+        files.push(path.join(config.output.path, config.output.sourceMapFilename));
     }
 
     tools.unlink(files, log, done);
@@ -162,7 +173,7 @@ function clear ( config, done ) {
 
 
 function modules ( instance ) {
-    if ( instance ) {
+    if ( instance.stats ) {
         instance.stats.modules.forEach(function ( statModule ) {
             log.info(log.colors.bold(statModule.name));
             if ( statModule.reasons.length ) {
@@ -182,7 +193,7 @@ function modules ( instance ) {
 }
 
 
-function generator ( config, options = {} ) {
+function generator ( configProducer, options = {} ) {
     const
         tasks = {},
         {prefix = name + ':', suffix = ''} = options;
@@ -190,11 +201,11 @@ function generator ( config, options = {} ) {
     let instance = {};
 
     tasks[prefix + 'config' + suffix] = function () {
-        log.inspect(resolveConfig(config, require('webpack')));
+        log.inspect(resolveConfig(configProducer, require('webpack')));
     };
 
     tasks[prefix + 'build' + suffix] = function ( done ) {
-        instance = build(config, instance, done);
+        instance = build(configProducer, instance, done);
     };
 
     tasks[prefix + 'modules' + suffix] = function () {
@@ -202,11 +213,11 @@ function generator ( config, options = {} ) {
     };
 
     tasks[prefix + 'clear' + suffix] = function ( done ) {
-        clear(config, done);
+        clear(configProducer, done);
     };
 
     tasks[prefix + 'watch' + suffix] = function ( done ) {
-        instance = watch(config, instance, done);
+        instance = watch(configProducer, instance, done);
     };
 
     tasks[prefix + 'unwatch' + suffix] = function () {
