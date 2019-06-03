@@ -109,9 +109,8 @@ function watch ( configProducer, instance, done ) {
 function build ( configProducer, instance, done ) {
     const
         webpack = require('webpack'),
-
-        config = resolveConfig(configProducer, webpack),
-        hooks  = config.hooks;
+        config  = resolveConfig(configProducer, webpack),
+        hooks   = config.hooks;
 
     delete config.hooks;
 
@@ -157,9 +156,8 @@ function clear ( configProducer, done ) {
     const
         path    = require('path'),
         webpack = require('webpack'),
-
-        config = resolveConfig(configProducer, webpack),
-        files  = [path.join(config.output.path, config.output.filename)];
+        config  = resolveConfig(configProducer, webpack),
+        files   = [path.join(config.output.path, config.output.filename)];
 
     // add map file
     if ( config.output.sourceMapFilename ) {
