@@ -154,14 +154,14 @@ function unwatch ( instance ) {
 
 function clear ( configProducer, done ) {
     const
-        path    = require('path'),
-        webpack = require('webpack'),
-        config  = resolveConfig(configProducer, webpack),
-        files   = [path.join(config.output.path, config.output.filename)];
+        path    = require('path');
+
+        config = resolveConfig(configProducer, require('webpack')),
+        files = [path.relative('.', path.join(config.output.path, config.output.filename))];
 
     // add map file
     if ( config.output.sourceMapFilename ) {
-        files.push(path.join(config.output.path, config.output.sourceMapFilename));
+        files.push(path.relative('.', path.join(config.output.path, config.output.sourceMapFilename)));
     }
 
     tools.unlink(files, log, done);
