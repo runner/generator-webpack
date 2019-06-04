@@ -154,10 +154,9 @@ function unwatch ( instance ) {
 
 function clear ( configProducer, done ) {
     const
-        path    = require('path');
-
+        path   = require('path'),
         config = resolveConfig(configProducer, require('webpack')),
-        files = [path.relative('.', path.join(config.output.path, config.output.filename))];
+        files  = [path.relative('.', path.join(config.output.path, config.output.filename))];
 
     // add map file
     if ( config.output.sourceMapFilename ) {
