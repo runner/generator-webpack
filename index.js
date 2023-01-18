@@ -54,15 +54,17 @@ function report ( config, instance, error, stats ) {
         });
 
         instance.stats.errors.forEach(function ( error ) {
-            error = error.split('\n');
-            log.fail('%s %s', log.colors.bold(error.shift()), error.shift());
-            console.log(log.colors.red(error.join('\n')));
+            //error = error.split('\n');
+            //log.fail('%s %s', log.colors.bold(error.shift()), error.shift());
+            //console.log(log.colors.red(error.join('\n')));
+            console.log(error);
         });
 
         instance.stats.warnings.forEach(function ( warning ) {
-            warning = warning.split('\n');
-            log.warn('%s %s', log.colors.bold(warning.shift()), warning.shift());
-            console.log(log.colors.yellow(warning.join('\n')));
+            //warning = warning.split('\n');
+            //log.warn('%s %s', log.colors.bold(warning.shift()), warning.shift());
+            //console.log(log.colors.yellow(warning.join('\n')));
+            console.log(warning);
         });
     }
 }
